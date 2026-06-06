@@ -26,4 +26,4 @@ log_episode: 100
 print_every: 1000
 save_model_episode: 15000
 visualize_every: 30000
-n_episodes: 30000
+n_episodes: 15000
