@@ -54,6 +54,9 @@ def parse_args():
     parser.add_argument(
         '--use_return', action=argparse.BooleanOptionalAction, default=None,
         help="GRPO: compute discounted return-to-go as advantage (--use_return) or use normalized reward directly (--no-use_return, default).")
+    parser.add_argument(
+        '--n_episodes', type=int, default=None,
+        help="Override total training episodes (e.g. small value for quick Colab runs).")
     return parser.parse_args()
 
 
@@ -96,6 +99,8 @@ def main(args):
         config.global_norm = args.global_norm
     if args.use_return is not None:
         config.use_return = args.use_return
+    if args.n_episodes is not None:
+        config.n_episodes = args.n_episodes
 
     # Ensure if you're logging to wandb, it's to the right project
     if not args.debug and not args.visualize:

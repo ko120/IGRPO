@@ -220,6 +220,10 @@ class MultiAgent():
         env_max_steps = getattr(self._raw_env, 'max_steps', 100)
         est_episodes_per_iter = max(1, train_batch_size // 100)
 
+        # Reset CUDA peak-memory tracker so logged VRAM reflects this run only.
+        if torch.cuda.is_available():
+            torch.cuda.reset_peak_memory_stats()
+
         iteration = 0
         while self.total_episodes < n_episodes:
             iteration += 1
@@ -255,6 +259,8 @@ class MultiAgent():
                     log_data["train/policy_loss"] = shared.get("policy_loss", 0.0)
                     log_data["train/entropy"] = shared.get("entropy", 0.0)
                     log_data["train/kl_loss"] = shared.get("mean_kl_loss", 0.0)
+                if torch.cuda.is_available():
+                    log_data["system/peak_vram_gb"] = torch.cuda.max_memory_allocated() / 1e9
                 wandb.log(log_data)
 
             if iteration % max(1, print_every // est_episodes_per_iter) == 0:
